@@ -1,4 +1,4 @@
-/*
+ /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -11,41 +11,41 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Assem
  */
-public class InvoiceHeaderTableModel extends AbstractTableModel{
-   private ArrayList<InvoiceHeader> invoicesArray;
+public class InvoiceLineTableModel extends AbstractTableModel{
+       private ArrayList<InvoiceLine> invoicesLines;
 
-    public InvoiceHeaderTableModel(ArrayList<InvoiceHeader> invoicesArray) {
-        this.invoicesArray = invoicesArray;
+    public InvoiceLineTableModel(ArrayList<InvoiceLine> invoicesLines) {
+        this.invoicesLines = invoicesLines;
     }
 
-    public ArrayList<InvoiceHeader> getInvoicesArray() {
-        return invoicesArray;
+    public  ArrayList<InvoiceLine> getinvoicesLines() {
+        return invoicesLines;
     }
 
    
 
     @Override
     public int getRowCount() {
-       return  invoicesArray.size();
+       return  invoicesLines.size();
     }
 
     @Override
     public int getColumnCount() {
-         return 4;
+         return  4;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-         InvoiceHeader row = invoicesArray.get(rowIndex);
+         InvoiceLine row = invoicesLines.get(rowIndex);
          switch (columnIndex) {
             case 0:
-              return  row.getNum();
+              return  row.getItemName();
             case 1:
-              return  row.getCustomerName();
+              return  row.getItemPrice();
               case 2:
-              return  row.getInvoiceDate();
+              return  row.getItemcount();
               case 3: 
-              return   row.getLineTotal();
+              return   row.getItemcount();
               
             default:
                 return "null";
@@ -56,17 +56,18 @@ public class InvoiceHeaderTableModel extends AbstractTableModel{
       public String getColumnName(int colum){
           switch (colum) {
             case 0:
-              return  "Invoice Num";
+              return  "Item Name";
             case 1:
-              return  "Invoice Date";
+              return  "Item price";
               case 2:
-              return  "Customer Name";
+              return  "Item Count";
               case 3: 
-              return   "Invoice total";
+              return   "Item Total";
               
             default:
                 return "null";
         }
       }
+   
     
 }
