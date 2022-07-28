@@ -1,4 +1,7 @@
 package com.mycompany.mavenproject1.model;
+
+import com.sun.net.httpserver.Headers;
+
 public class InvoiceLine {
       private String itemName;
       private double itemPrice;
@@ -55,5 +58,8 @@ public class InvoiceLine {
     @Override
     public String toString() {
         return "InvoiceLine{" + "itemName=" + itemName + ", itemPrice=" + itemPrice + ", itemcount=" + itemCount + ", invoiceHeader=" + invoiceHeader + '}';
+    }
+    public String getDataCsv(){
+        return "" + invoiceHeader + "," + itemName + "," + itemPrice + "," +   itemCount;
     }
 }

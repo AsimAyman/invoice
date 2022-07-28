@@ -2,15 +2,19 @@ package com.mycompany.mavenproject1.model;
 
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class InvoiceHeader {
+public class InvoiceHeader {   
+    private DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private int num;
     private String customerName;
     private Date invoiceDate;
     public ArrayList<InvoiceLine> invoiceLines;
     public InvoiceHeader(int num, String customerName, Date invoiceDate) {
+        this.dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         this.num = num;
         this.customerName = customerName;
         this.invoiceDate = invoiceDate;
@@ -77,5 +81,9 @@ public class InvoiceHeader {
         this.invoiceLines= new ArrayList<>();
         }
         this.invoiceLines.add(invoiceLines);
+    }
+  public String getDataCsv(){
+        
+        return "" + num + "," + dateFormat.format(invoiceDate) + "," + customerName ;
     }
 }

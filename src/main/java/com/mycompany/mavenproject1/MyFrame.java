@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -212,14 +213,11 @@ public class MyFrame extends javax.swing.JFrame implements ActionListener, ListS
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(55, 55, 55)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(55, 55, 55)
-                                        .addComponent(invNumberLable, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(invTotalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(73, 73, 73)
+                                    .addComponent(invNumberLable, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(InvDateLable, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(41, 41, 41)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(invNumValTable, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(invTotalValLable, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -232,9 +230,10 @@ public class MyFrame extends javax.swing.JFrame implements ActionListener, ListS
                                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(55, 55, 55)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(InvDateLable, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(invCustomerNameLable, javax.swing.GroupLayout.Alignment.LEADING))))))
+                                .addComponent(invCustomerNameLable))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(57, 57, 57)
+                                .addComponent(invTotalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -247,11 +246,11 @@ public class MyFrame extends javax.swing.JFrame implements ActionListener, ListS
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(invNumberLable)
                             .addComponent(invNumValTable))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(InvDateLable)
                             .addComponent(invDateValTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(invCustomerNameValTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(invCustomerNameLable))
@@ -384,12 +383,12 @@ public class MyFrame extends javax.swing.JFrame implements ActionListener, ListS
             case "loadFile":
                 loadFile();
                 break;
-            case "saveFile":;
-                ;
+            case "saveFile":saveData();
+                break;
             case "createNewInvoice":showNewInvoDialog();break;
-            case "deleteInvoice":;
+            case "deleteInvoice":deleteInvoice();break;
             case "createNewLine":showLineDialog();
-            case "deleteLine":;
+            case "deleteLine":deleteLine();break;
             case "okCreateIvoice":okCreateIvoice();
             case "cancleCreateInvoice":cancleCreateInvoice(headerDialog); break;
             case "okCreateline":okCreateline();
@@ -569,6 +568,72 @@ public class MyFrame extends javax.swing.JFrame implements ActionListener, ListS
    headerTableModel.fireTableDataChanged();
     
    invTotalValLable.setText(""+header.getLineTotal());
+  
     }
+
+    private void deleteLine() {
+       int lineIndex = lineTable.getSelectedRow();
+       InvoiceLine line = invoiceLieTableModel.getinvoicesLines().remove(lineIndex);
+       invoiceLieTableModel.fireTableDataChanged();
+       headerTableModel.fireTableDataChanged();
+       invTotalValLable.setText(""+line.getInvoiceHeader().getLineTotal());
+       
+    }
+
+    private void deleteInvoice() {
+        int invIndex = invoiceTable.getSelectedRow();
+        InvoiceHeader header= headerTableModel.getInvoicesArray().get(invIndex);
+        headerTableModel.getInvoicesArray().remove(invIndex);
+        //invoiceLieTableModel = new InvoiceLineTableModel(new ArrayList<InvoiceLine>())
+           invoiceTable.setModel(headerTableModel);
+           headerTableModel.fireTableDataChanged();
+           invCustomerNameValTxt.setText("");
+            invDateValTxt.setText("");
+            invNumValTable.setText("");   
+            invTotalValLable.setText("");
+        
+    }
+
+
+    private void saveData() {
+        String headers ="";
+        String lines ="";
+                for(InvoiceHeader header : invoiceHeaderLists){
+                    headers += header.getDataCsv();
+                    headers += "\n"; 
+                    for(InvoiceLine line : header.getInvoiceLines()){
+                        lines += line.getDataCsv();
+                        lines += "\n";
+                    }
+                } 
+
+                 JOptionPane.showMessageDialog(this, "Please, select file to save headers data!", "Attention", JOptionPane.WARNING_MESSAGE);
+                    JFileChooser fc = new JFileChooser();
+                    int result = fc.showSaveDialog(this);
+               if( result == JFileChooser.APPROVE_OPTION){
+                   File fileHeader = fc.getSelectedFile();
+                   try{
+                        FileWriter hfw = new FileWriter(fileHeader);
+                        hfw.write(headers);
+                         hfw.flush();
+                         hfw.close();
+                        JOptionPane.showMessageDialog(this, "Please, select file to save Lines data!", "Attention", JOptionPane.WARNING_MESSAGE);
+                        result = fc.showSaveDialog(this);
+                        if( result == JFileChooser.APPROVE_OPTION){
+                         File fileLine = fc.getSelectedFile();
+                         FileWriter lfw = new FileWriter(fileLine);
+                         lfw.write(lines);
+                         lfw.flush();
+                         lfw.close();
+                        }
+                        
+                   }catch(Exception e){}
+                   
+    
+} 
+              
+    }
+
+     
        
 }
